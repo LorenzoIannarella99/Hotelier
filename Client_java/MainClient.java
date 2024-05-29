@@ -96,7 +96,7 @@ public class MainClient {
             this.coda_notifiche = coda;
         }
 
-        public synchronized void run(){
+        public void run(){
             try (MulticastSocket receiverSocket = new MulticastSocket(multicast_Port)){
                 //  Setto il timeOut di attesa per la ricezione del pacchetto UDP
                 receiverSocket.setSoTimeout(2000);
@@ -325,7 +325,7 @@ public class MainClient {
     };
 
     // Metodo che mi permette di visualizzare l'ultimo badge ottenuto
-    private static synchronized void showMyBadges(){
+    private static void showMyBadges(){
         if(!login){
             System.out.println("> Per effettuare questa operazione devi essere loggato\n");
         }else{
@@ -351,7 +351,7 @@ public class MainClient {
     }
 
     // Metodo che gestisce l'interazione con l'utente 
-    private static synchronized void cli(String output){
+    private static void cli(String output){
         // Espressione regolare con la quale limito i caratteri utilizzabili per la registrazione 
         String valid_input = "[\\p{Alnum}]+" ;
         // switch che gestisce tutte le casistiche 
