@@ -133,7 +133,7 @@ public class Runner implements Runnable{
         out.println("OK");    
     }
     // Funzione che restistuisce le informazioni inerenti ai badge degli utenti registrati 
-    private synchronized void badge_operation(String username){
+    private void badge_operation(String username){
         out.println(this.utenti.get(username).getBadge());   
     }
     // Funzione che gestisce il logout lato server
@@ -151,7 +151,7 @@ public class Runner implements Runnable{
         
     }
 
-    public synchronized void run(){
+    public void run(){
         try{
             input = new Scanner(this.sok.getInputStream());
             out = new PrintWriter(this.sok.getOutputStream(),true);
