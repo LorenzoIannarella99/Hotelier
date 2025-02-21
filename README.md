@@ -1,177 +1,192 @@
-# PROGETTO HOTELIER
+# HOTELIER
 ## INFO
 **JDK**
-Il progetto è stato realizzato con JDK 19. Per come è stato scritto il codice non ci sono grosse  differenze con JDK 8, l'unica differenza  presente è nell'inserimento al gruppo multicast dove il metodo  joinGroup oltre a prendere in input un "InetAddress",  prende in input anche un "NetworkInterface" ovvero l'interfaccia di rete.
 
-**Ubuntu**
-Il progetto è stato realizzato su un sistema Ubuntu 22.04.4 LTS e per far si che il client recevesse i pacchetti UDP, inviati da un thread del server sul gruppo multicast,  ho dovuto aggiungere una regola al firewall di ubuntu dove specifico al firewall di far passare i pacchetti UDP sulla porta 4000 utilizzando il comando :
+**The project was developed with JDK 19. In terms of how the code is written, there are no major differences compared to JDK 8. The only difference is in the multicast group join, where the `joinGroup` method now takes both an "InetAddress" and a "NetworkInterface" as input, i.e., the network interface.**
+
+**Ubuntu**  
+The project was developed on an Ubuntu 22.04.4 LTS system. In order for the client to receive UDP packets sent by a server thread on the multicast group, I had to add a rule to the Ubuntu firewall to allow UDP packets on port 4000. This is done by using the following command:
 ```bash
 sudo ufw allow 4000/udp
 ```
 
-**Librerie esterne**
-Per scopi didattici ho deciso di utilizzare la libreria gson di Google. Nello specifico ho usato la **gson-2.10.1**, che permette di effettuare **serializzazione** e **deserializzazione** di oggetti java, funzionalità che sono state sfruttate per rendere persistenti o per reperire dalla memoria le strutture dati che il server usa per gestire tutte le informazioni .
+**External Libraries**  
+For educational purposes, I chose to use Google’s Gson library. Specifically, I used **gson-2.10.1**, which enables **serialization** and **deserialization** of Java objects, a feature used to persist or retrieve the data structures that the server uses to manage all information.
 
-## ISTRUZIONI 
-Il codice è diviso in due cartelle, una contiene tutte le classi che consentono al server di funzionare correttamente e l'altra contiene tutte le classi per far funzionare correttamente il client. 
-### 1) Compilazione :
-La compilazione, sia del codice pertiente al server che quello pertinente al client, avviene eseguendo le stesse istruzioni da terminale ovvero :
+## INSTRUCTIONS  
+The code is divided into two folders: one contains all the classes that ensure the server functions correctly, and the other contains all the classes needed for the client to work properly.  
+### 1) Compilation:  
+The compilation, both for the server and client code, is done by executing the same terminal command:
 ```bash
-javac -cp gson-2.10.1.jar:. \*.java
+javac -cp gson-2.10.1.jar:. *.java
 ```
-In sostanza, si effettua una compilazione considerando anche la libreria gson che viene caricata dinamicamente tramite il paramentro `-cp`. Tale parametro informa il compilatore java sul dove cercare le classi e i pacchetti, in questo caso il primo è `gson-2.10.1.jar` poi vi è il `:` che fa da separatore e poi vi è `. ` che indica la directory corrente. Da tale directory corrente con `*.java` viene indicato che devono essere compilati tutti i file java presenti.
-### 2) Esecuzione
-L'esecuzione può avvenire in due diverse modalità, la prima è eseguendo il comando da terminale ```java -cp gson-2.10.1.jar:. MainClient``` per lanciare il client e 
-```java -cp gson-2.10.1.jar:. MainServer``` per lanciare il server.
-Un'altra modalità con cui possono essere eseguiti sia il server che il client è mediante jar eseguendo i comandi da terminale ```java -cp Server.jar:gson-2.10.1.jar MainServer``` per lanciare il server e ```java -cp Client.jar:gson-2.10.1.jar MainClient``` per lanciare il client.
+Essentially, this compiles the code while considering the Gson library, which is loaded dynamically through the `-cp` parameter. This parameter tells the Java compiler where to look for classes and packages. In this case, the first is `gson-2.10.1.jar`, followed by a `:` separator, and then `.` to indicate the current directory. The `*.java` specifies that all Java files in the current directory should be compiled.
 
-### 3) Argomenti da passare al codice :
-Non sono previsti argomenti da passare al codice in quanto tutte le variabili utili da poter permettere una corretta esecuzione del codice, sia lato client che lato server, sono definite nei rispettivi file di configurazione.
+### 2) Execution  
+Execution can occur in two different ways: The first is by running the following commands from the terminal:  
+```bash
+java -cp gson-2.10.1.jar:. MainClient
+```
+to start the client and  
+```bash
+java -cp gson-2.10.1.jar:. MainServer
+```
+to start the server.  
+Alternatively, both the server and client can be executed via JAR files using the following commands:
+```bash
+java -cp Server.jar:gson-2.10.1.jar MainServer
+```
+to run the server and  
+```bash
+java -cp Client.jar:gson-2.10.1.jar MainClient
+```
+to run the client.
 
-### 4) Sintassi dei comandi :
+### 3) Arguments to Pass to the Code:  
+No arguments are required as all the necessary variables for the proper execution of the code, both on the client and server sides, are defined in their respective configuration files.
 
-**Lato Server**
-È possibile terminare l'esecuzione del server mediante la digitazione del **"ctrl+c"**, questo provocherà come già spiegato nello schema generale dei thread, una corretta terminazione del MainServer e di tutti gli altri thread in esecuzione. 
+### 4) Command Syntax:  
 
-**Lato Client**
-Il client si occupa principalmente d'interagire con l'utente infatti esso è in grado di rispondere a diversi comandi.
-Il client all'avvio suggerisce all'utente di digitare **info** per poter visualizzare tutte le operazioni che esso è in grado di gestire.
-Per ogni operazione il client guida l'utente indicandogli cosa inserire e comunica gli inserimenti non validi. Questo approccio permette all'utente di avere un'iterazione con il client,  facile ed intuitiva.
-In aggiunta alle operazioni definite nelle specifiche ho aggiunto due operazioni aggiuntive:
-**return** e **exit**.
-Il comando **return** permette all'utente di tornare indietro qual'ora decidesse di non voler più eseguire un comando e questo può essere fatto in qualunque fase dell'interazione. 
-Il comando **exit** permette di effettuare una terminazione elegante del programma, effettuando anche il logout se l'utente ha effettuato il login.
-La terminazione del programma può avvenire anche digitando **"ctrl+c"** anche in questo caso se l'utente ha effettuato il login viene effettuato il logout.
+**On the Server Side**  
+The server can be terminated by typing **"ctrl+c"**, which will trigger a proper shutdown of the `MainServer` and all other running threads, as explained in the general thread structure.
 
-## SCELTE IMPLEMENTATIVE
-### 1) LATO SERVER :
-Ho scelto di implementare il server in modo tale che sia lui a gestire (tramite dei thread gestiti da un *ThreadPool*) tutte le strutture dati, utili a mantenere le informazioni in merito agli hotels,recensioni e gli utenti registrati.
-Un servizio fondamentale di Hotelier è quello di mantenere una classifica degli hotel di ogni città  e d'informare gli utenti loggati ogni volta che cambia l'identità del primo classificato in qualche rancking locale.
-La classifica viene definita basandosi sulla quantità di recensioni, la qualità delle recensioni (basandosi sul globar score di ogni recensione) e della attualità delle recensioni.
-Ho scelto d'implementare tale calcolo considerando la **qualità** delle recensioni come la somma dei global score raccolti della recensioni di ogni hotel. Il global score viene influenzato con un peso che varia in base **all'attualità** delle recensioni ovvero, se una recensione è stata effettuata da più di due mesi, al suo global score verrà moltiplicato un peso di "0,4" altrimenti, se essa è stata effettuata da meno di due mesi, al global score verrà moltiplicato un peso di "1".
-Il valore risultante di **qualità** viene poi influenzato dalla **quantità** di rencensioni, infatti, se esse risultano essere *minori di 50* al valore qualità viene moltiplicato un peso di "0,4", se risultano essere *comprese tra 50 incluso e 100 escluso* si moltiplica un peso di "0,6" altrimenti, se risultano essere *maggiori o uguali di 100* viene moltiplicato un  peso di "0.8".
-Il risultato finale sarà il valore con il quale vengono disposti gli hotels in ordine decrescente nelle liste associate ad ogni città.
+**On the Client Side**  
+The client mainly interacts with the user, and it can respond to various commands. Upon starting, the client suggests typing **info** to display all the operations it can handle.  
+For each operation, the client guides the user on what to input and communicates invalid entries. This approach makes the interaction with the client intuitive and easy for the user.  
+In addition to the operations defined in the specifications, I have added two additional operations:  
+**return** and **exit**.  
+The **return** command allows the user to go back if they decide not to execute a command anymore, and this can be done at any point in the interaction.  
+The **exit** command allows for an elegant termination of the program, also logging the user out if they have logged in.  
+The program can also be terminated by typing **"ctrl+c"**, and in this case, if the user is logged in, they will be logged out as well.
 
-### 2) LATO CLIENT :
-Ho scelto d'implementare il client in modo che si occupi solo di gestire l'interazione con l'utente mediante un metodo *cli()* che cattura per mezzo di uno **scanner** le operazioni che l'utente vuole effettuare.
-Il client si occupa anche di ricevere le notifiche inviate dal server in merito all'aggiornamento dei rank locali, ciò avviene per mezzo di una coda *ThreadSafe* per poi mostrarle all'utente.
+---
 
-### 3) CONNESSIONE PERSISTENTE E NON :
-Nelle specifiche del progetto era richiesto di stabilire una connessione persistente tra client e server dal momento in cui l'utente effettuava il login e di definire connessioni non persistenti per tutte le operazioni effettuate dagli utenti che non avevano effettuato il login.
-Ho deciso d'implementare questa specifica gestendo in modo diverso le connessioni sia lato server che lato client, la distinzione viene fatta mediante la variabile booleana **login**. 
-Per ogni operazione lato client vi è il controllo della variabile *login* che se *true* il metodo usa la socket aperta durante la fase di login ed usa quella per comunicare con il server, altrimenti, apre e chiude una socket dopo aver eseguito l'operazione richiesta dall'utente che ovviamente non necessitava del login per essere effettuata.
-Per il lato Server (il codice che descrive il comportamento dei thread Runner gestiti dal **ThreadPoolExecutor gestore** ) la variabile di login viene utlizzata come condizione del *while* che impedisce al thread di terminare e quindi di chiudere la connessione. Ciò implica che l'utente che ha effettuato il login avrà un thread del server completamento dedicato.
-Altrimenti, dopo aver fornito il servizio, il thread termina la sua esecuzione.
-### 4) CLASSI :
-**- User**
-La classe *User* permette di creare oggetti che rappresentano gli utenti registrati.
-Le istanze di questa classe posseggono attributi che rappresentano le proprietà dell'utente come *username, password, numero di recensioni effettuate, badge posseduti, status*.
-Quest'ultimo permette al server di capire se tale utente registrato è loggato o meno.
-La classe User racchiude dei metodi che gli permettono di modificare tali attributi come :
-*- setStatus()* che permette di modificare lo stato dell'utente;
-*- getBadge()* che ritorna l'ultimo badge ottenuto;
-*- addBagde()* che permette di aggiungere un badge alla lista di badge posseduti.
+## IMPLEMENTATION CHOICES
+### 1) SERVER SIDE:
+I chose to implement the server in such a way that it handles (via threads managed by a *ThreadPool*) all the data structures needed to maintain information about hotels, reviews, and registered users.  
+A key service of Hotelier is maintaining a ranking of hotels in each city and informing logged-in users whenever the identity of the top-ranked hotel in any local ranking changes.  
+The ranking is determined based on the quantity of reviews, the quality of reviews (based on the global score of each review), and the recency of the reviews.  
+I decided to implement this calculation by considering the **quality** of the reviews as the sum of the global scores collected from the reviews of each hotel. The global score is influenced by a weight based on the **recency** of the reviews; if a review was made more than two months ago, its global score will be multiplied by a weight of "0.4". Otherwise, if the review was made within the past two months, the global score will be multiplied by a weight of "1".  
+The resulting **quality** value is then influenced by the **quantity** of reviews. If the number of reviews is *less than 50*, the quality value will be multiplied by a weight of "0.4"; if the number of reviews is *between 50 (inclusive) and 100 (exclusive)*, the weight will be "0.6". If the number of reviews is *greater than or equal to 100*, the weight will be "0.8".  
+The final result will be the value by which hotels are ranked in descending order in the lists associated with each city.
 
-**- Hotel**
-La classe *Hotel* permette di creare oggetti che rappresentano gli hotels che il server gestisce, dai quali è in grado di estrapolare informazioni per rispondere alle richieste del client.
-Le istanze hotel posseggono attributi che rappresentano le caratteristiche dell'hotel come ad esempio: *id, nome, città, numero di telefono, descrizione, punteggio sintetico (score) e le valutazioni*.
-Inoltre, posseggono dei metodi che permettono di modificare alcuni attributi come :
-*- setRate()* che permette di modificare il punteggio sintetico (score)  dell'hotel, visibile all'utente quando richiede le informazioni in merito all'hotel;
-*-setRatings()* che permette di modificare le valutazioni dell'hotel;
-*- getInfo()* che restituisce una stringa formattata contenente le informazioni che sono rese visibili all'utente.
+### 2) CLIENT SIDE:
+I decided to implement the client so that it is responsible only for handling user interaction via a *cli()* method, which captures the operations the user wants to perform using a **scanner**.  
+The client is also responsible for receiving notifications sent by the server regarding updates to the local rankings. This is done through a *ThreadSafe* queue, which then displays the updates to the user.
 
-**- Recensioni**
-La classe *Recensioni* permette di creare oggetti recensioni che rappresentano le recensioni effettuate dall'utente, infatti, tali oggetti contengono attributi come global score (score) e le valutazioni di determinate caratteristiche dell'hotel definite dall'utente. Tali oggetti vengono poi raccolti in una lista di recensioni associata a ciascun hotel.
-Le istanze di tipo Recensione posseggono un attributo di tipo *Date* che rappresenta la data con l'ora in cui è stata effettuata la recensione.
+### 3) PERSISTENT AND NON-PERSISTENT CONNECTIONS:
+The project specifications required establishing a persistent connection between the client and the server once the user logged in and defining non-persistent connections for all operations performed by users who had not logged in.  
+I decided to implement this specification by handling the connections differently on both the client and server sides. The distinction is made using the boolean variable **login**.  
+For each operation on the client side, the *login* variable is checked. If it is *true*, the method uses the socket opened during the login phase to communicate with the server. Otherwise, a socket is opened and closed after executing the operation requested by the user, which does not require login.  
+On the server side (the code describing the behavior of the Runner threads managed by the **ThreadPoolExecutor manager**), the login variable is used as the condition for the *while* loop that prevents the thread from terminating and closing the connection. This means that the user who logged in will have a dedicated server thread. Otherwise, after providing the service, the thread terminates its execution.
 
-**- Ratings**
-Questa classe rappresenta gli oggetti ratings, ovvero, le valutazioni associtate alle caratteristiche degli hotels o alle recensioni come *pulizia, posizione, servizi e qualità*.
-Tali istanze posseggono dei metodi che permettono di visualizzare e modificare tali attrubuti.
+### 4) CLASSES:
+**- User**  
+The *User* class allows for the creation of objects representing registered users.  
+Instances of this class have attributes representing the user's properties, such as *username, password, number of reviews made, badges owned, and status*.  
+The status attribute helps the server determine whether the user is logged in or not.  
+The User class also includes methods to modify these attributes, such as:  
+- *setStatus()*: modifies the user's status.  
+- *getBadge()*: returns the last badge acquired.  
+- *addBadge()*: adds a badge to the list of owned badges.
 
-**- Coppia**
-La classe coppia è una classe di supporto che mi ha permesso di organizzare gli hotel e le  recensioni in un'unica struttura dati.
-Tale classe rappresenta l'associazione tra l'hotel e la sua lista di recensioni, infatti, ad ogni città è associta una lista di tipo Coppia, dove ogni instanza di Coppia rappresenta un hotel e le sue recensioni.
-Questo mi ha permesso di gestire facilmente il calcolo del punteggio degli hotels validi per il ranking locale mediante la definizione di un metodo *getScore()* che calcola  il punteggio dell' hotel basandosi sulla sua lista di recensioni utilizzando l'algoritmo definito nel punto 1 di questa sezione.
-Le instanze coppia posseggono un altro metodo *make_avg()* che viene eseguito ogni qualvolta che un thread del server aggiunge una recensione alla lista di recensioni. Ciò, serve per effettuare la media dello score e delle valutazioni estrapolate dalle recensioni per poi sostituirle a quelle dell'hotel che sono rese visibili agli utenti.
+**- Hotel**  
+The *Hotel* class allows for the creation of objects representing the hotels managed by the server, from which the server can extract information to respond to client requests.  
+Hotel instances have attributes representing the hotel's characteristics, such as *id, name, city, phone number, description, score (rating), and reviews*.  
+Additionally, they have methods to modify certain attributes, such as:  
+- *setRate()*: modifies the hotel's overall rating (score), which is visible to the user when requesting hotel information.  
+- *setRatings()*: modifies the ratings of the hotel.  
+- *getInfo()*: returns a formatted string containing the information visible to the user.
 
+**- Reviews**  
+The *Review* class allows for the creation of objects representing the reviews made by users. These objects contain attributes such as global score (rating) and ratings for specific hotel features defined by the user. These objects are then stored in a list of reviews associated with each hotel.  
+Instances of the Review class have an attribute of type *Date*, which represents the date and time when the review was made.
 
-## STRUTTURE DATI UTILIZZATE
-Il server è l'unico ad usare strutture dati, in quanto si occupa della gestione di tutte le richieste effettuate dal client, in particolare nel progetto sono state definite: 
+**- Ratings**  
+This class represents the ratings associated with hotel features or reviews, such as *cleanliness, location, services, and quality*.  
+Instances of this class have methods that allow for viewing and modifying these attributes.
 
-**- hashmap :** 
-è una ConcurrentHashMap con tipo **<String,List<Coppia\>>**, nel quale la chiave è la stringa che rappresenta il nome delle città e il valore è una **Lista di coppie** dove ogni **Coppia** è un oggetto che ha tipo **<Hotel,List<Recensioni\>>**, quindi, ad ogni hotel che è presente nella città, definita come chiave della hashmap, corrisponde la rispettiva lista di recensioni. 
-Questa scelta mi ha permesso di rendere molto facile l'aggiormaneto dei rank locali, il funzionamento dell'aggiornamento è spiegato nelle *scelte implementative*.
-Tale scelta, quella di gestire sia gli hotels che le recensioni in una hashmap concorrente, mi ha permesso di risolvere tutti i problemi dovuti alla sincronizzazione non utlizzando esplicitamente nessun meccanismo di sincronizzazione. È bastato gestire le scritture nell'hashmap usando metodi atomici come la **compute()** e **putIfAbsent()**.
+**- Coppia**  
+The *Coppia* class is a support class that helped me organize hotels and reviews into a single data structure.  
+This class represents the association between a hotel and its list of reviews. Each city is associated with a list of Coppia objects, where each Coppia instance represents a hotel and its reviews.  
+This approach allowed me to easily manage the calculation of hotel scores for local rankings by defining a method *getScore()* that calculates the hotel's score based on its list of reviews using the algorithm defined in point 1 of this section.  
+Coppia instances also have another method *make_avg()*, which is executed whenever a server thread adds a review to the review list. This method computes the average score and ratings from the reviews and replaces the existing values visible to the users.
 
-**- utenti :** 
-è una ConcurrenthashMap con tipo **<String,User\>>**; tale struttura contiene tutte le informazioni in merito agli utenti registrati.
-Le chiavi di questa hashmap sono gli **username** con cui gli utenti si sono registrati.
-Ho deciso di fare ciò in quanto nel documento del progetto era speficato che gli username dovessero essere univoci e cosi ho in automatico gestito l'impossibilità di avere più utenti con lo  stesso username sfruttando le proprietà della struttura dati.
-Il valore associato alle chiavi è l'oggetto **User** che rappresenta l'utente, nel quale sono contenute le informazioni come password, numero di recensioni effettuate e i badges da lui ottenuti.
+---
 
-**-topHotels :**
- è una ConcurrentHashMap con tipo **<String,String>**; essa è una struttura dati di  supporto utilizzata per mantenere l'informazione del  miglior hotel per ogni città , le chiavi sono i nomi delle città e i valori sono delle stringhe che rappresentano i nomi degli hotel che risultano avere lo score migliore tra gli hotel presenti in tale città.
+## DATA STRUCTURES USED  
+The server is the only component that uses data structures, as it handles all requests made by the client. Specifically, in this project, the following have been defined:
 
-**-Coda_notifiche:** 
-è una *LinkedBlockingQueue* di strighe condivisa tra il thread main lato client e il thread che si occupa di ricevere le notifiche inviate dal server per informare l'utente del cambiamento dei rank locali.
-Ho deciso di utilizzare questa struttura dati in modo da gestire in maniera ordinata la stampa delle notifiche con le stampe dovute dal **cli()**, metodo che si occupa di gestire l'interazione con l'utente.
+**- Hashmap:**  
+This is a `ConcurrentHashMap` of type **<String, List<Pair>>**, where the key is a string representing the name of the cities, and the value is a **List of Pairs**, where each **Pair** is an object of type **<Hotel, List<Review>>**. Therefore, for each hotel in a city (defined as the key of the hashmap), there corresponds a list of reviews.  
+This choice made updating local rankings very easy, and the update process is explained in the *Implementation Choices* section.  
+By managing both hotels and reviews in a concurrent hashmap, I was able to resolve synchronization issues without explicitly using any synchronization mechanisms. It was sufficient to handle writes to the hashmap using atomic methods like **compute()** and **putIfAbsent()**.
 
-## SCHEMA GENERALE DEI THREAD UTILIZZATI
-### LATO CLIENT :
-Nel lato client sono presenti il MainClient, un terminationHandlerClient ed un Clientmulticast:
+**- Users:**  
+This is a `ConcurrentHashMap` of type **<String, User>**; this structure contains all information about registered users.  
+The keys of this hashmap are the **usernames** that users registered with.  
+I decided to do this because the project document specified that usernames must be unique, and this automatically handled the impossibility of having multiple users with the same username by taking advantage of the properties of this data structure.  
+The value associated with each key is the **User** object representing the user, which contains information such as password, number of reviews made, and the badges they have earned.
 
-**- MainClient:**
- Esso lancia il **readConfig()**, metodo che permette di effettuare la lettura dal file **client_properies** in modo da inizializzare tutte le variabili per la configurazione. 
-Successivamente entra nel while e inzia a gestire l'interazione con l'utente usando il metodo **cli()**  ed oltre, questo effettua il cotrollo sulla coda di notifiche e se sono presenti notifiche le mostra all'utente, stampandole a video altrimenti riesegue il while.
+**- TopHotels:**  
+This is a `ConcurrentHashMap` of type **<String, String>**; it is a support data structure used to maintain information about the best hotel in each city. The keys are the names of the cities, and the values are strings representing the names of the hotels with the highest score in that city.
 
-**- TerminationHandlerClient:**
-Tale thread viene eseguito quando si verifica un interruzione che può essere provocata da **System.exit\(1)** oppure dalla digitazione di **"ctrl+c"**. Esso si occupa di far terminare correttamente il programma, in particolare, nel caso in cui l'utente è loggato, provvederà ad effettuare la chiusura della socket attraverso la quale il client mantiene una connessione con il server ed effettua anche la chiusura del  **PrintWriter  outTCP** (tramite il quale il client scrive nella socket) e dello **Scanner  inTCP** (tramite il quale il client legge dalla socket).
- 
-**- Clientmulticast:**
-Tale thread viene laciato quando l'utente effettua il login, esso, si occupa di ricevere le notifiche inviate dal server in merito agli aggiornamenti sui rank locali. Ciò avviene mediante la ricezione di pacchetti UDP inviati dal server su un gruppo multicast, infatti, non appena viene eseguito tale thread, quello che fa è creare un **MulticastSocket** e unire tale socket al gruppo mutlicast. Il tutto avviene mediante il metodo **joinGroup()** che prende come input **InetAddress** ovvero, l'indirizzo IPv4 del gruppo multicast definito come valore di configurazione e l'interfaccia di rete **NetworkInterface**.
-In seguito il Clientmulticast definisce un **DatagramPacket** che rappresenterà il pacchetto ricevuto dal quale estrapolerà le informazioni.
-La recezione del pacchetto è definita all'interno di un ciclo while: 
+**- NotificationQueue:**  
+This is a *LinkedBlockingQueue* of strings shared between the main thread on the client side and the thread that handles receiving notifications from the server to inform the user about changes in local rankings.  
+I decided to use this data structure to manage the orderly display of notifications with the necessary print statements from **cli()**, the method that handles user interaction.
+
+## GENERAL THREAD SCHEMA USED
+
+### CLIENT SIDE:  
+On the client side, there is the `MainClient`, a `TerminationHandlerClient`, and a `ClientMulticast`:
+
+**- MainClient:**  
+It starts the **readConfig()** method, which reads from the **client_properties** file to initialize all the configuration variables.  
+Next, it enters the `while` loop and begins handling user interaction using the **cli()** method, which also checks the notification queue and, if there are notifications, displays them to the user. If there are no notifications, it re-executes the loop.
+
+**- TerminationHandlerClient:**  
+This thread is triggered when an interruption occurs, either from **System.exit(1)** or by pressing **"ctrl+c"**. It ensures the program terminates correctly. Specifically, if the user is logged in, it will close the socket through which the client maintains a connection with the server, as well as the **PrintWriter outTCP** (through which the client writes to the socket) and the **Scanner inTCP** (through which the client reads from the socket).
+
+**- ClientMulticast:**  
+This thread is launched when the user logs in. It is responsible for receiving notifications from the server about updates to the local rankings. This is done by receiving UDP packets sent by the server to a multicast group. Once the thread is executed, it creates a **MulticastSocket** and joins the multicast group. This is done using the **joinGroup()** method, which takes **InetAddress** (the IPv4 address of the multicast group defined in the configuration file) and **NetworkInterface** (the network interface).  
+Then, `ClientMulticast` defines a **DatagramPacket** that will represent the received packet from which it will extract the information.  
+The reception of the packet is handled inside a `while` loop:  
 ```java
 try{
 	receiverSocket.receive(receiver);
-	}catch(SocketTimeoutException  e){
+}catch(SocketTimeoutException  e){
 	continue;
-	}
-```
-La ricezione è racchiusa in un blocco try-catch perchè è stato definito un *time-out* sul tempo di attesa dedicato alla ricezione del pacchetto, in modo tale da non mantenere sempre il thread in attesa del pacchetto e quindi di poter terminare mediante il cambio di stato della condizione del while **multicast_end**, che avviene quando l'utente effettua il logout, exit oppure "ctrl+c".
+}
+```  
+The reception is wrapped in a try-catch block because a *timeout* has been defined for the waiting time for receiving the packet. This ensures the thread does not stay in a waiting state indefinitely and allows it to terminate when the user logs out, exits, or presses "ctrl+c".
 
+### SERVER SIDE:  
+On the server side, there is the main thread, a `TerminationHandlerServer`, a `SaveThread`, a `MulticastHandler` thread, and the `Runner` thread.
 
-### LATO SERVER :
-Nel lato server è presente il thread main, un TerminationHandlerServer, un thread Salvataggio, un thread Multicasthandler ed il thread Runner.
+**- MainServer:**  
+The `MainServer` is responsible for initializing the data structures needed to respond to client requests using the **initialize()** method. Before this, it calls **readConfig()** to initialize all variables with configuration values defined in the **server_properties** file.  
+`MainServer` initializes a **serverSocket**, which is crucial for establishing TCP connections with various clients, which are then managed by **Runner** threads generated by the **ThreadPoolExecutor Manager**.  
+Lastly, it initializes a **MulticastSocket**, through which UDP packets containing updates to the local rankings will be sent.
 
-**- MainServer :** 
-Il MainServer si occupa di inizializzare le strutture dati a lui utili per poter rispondere alle esigenze del client mediante il metodo **inizializzazione()**. Prima di quest'ultimo esegue il metodo **readConfig()** per poter inizializzare tutte le variabili con dei valori di configurazione definiti nel file **server_properties**.
-Il MainServer inizializza una **serverSocket** fondamentale per l'instaurazione di connessioni TCP con i vari client che poi vengono gestite dai thread **Runner** generati dal **ThreadPoolExecutor gestore**.
-Infine, inzializza una **MulticastSocket** attraverso la quale verranno inviati i pacchetti UDP conteneti gli aggiornamenti sui ranck locali. 
+**- TerminationHandlerServer:**  
+This thread ensures proper server termination when **ctrl+c** is pressed. Before terminating, it:  
+1. Closes any open sockets if they haven't been closed yet.  
+2. Changes the status of all users to "false" so they are not marked as logged in when the server is inactive.  
+3. Saves the data structures.  
+4. Ends the program.
 
-**- TerminationHandlerServer :**
-È il thread che si occupa di effettuare una corretta terminazione del server successivamente alla digitazione del "ctrl+c".
-Prima di terminare effettua:
-1) la chiusura delle socket se esse ancora non sono state chiuse;
-2) modifica lo status di tutti gli utenti a "false" in modo che non risultino loggati anche quando il server non è attivo;
-3) effettua il salvataggio delle strutture dati;
-4) fa terminare il programma.
+**- SaveThread:**  
+This thread is scheduled by the **ScheduledExecutorService scheduler** using the **scheduleWithFixedDelay** method to periodically save the in-memory data structures. All parameters related to the timing intervals for the thread execution are defined in the **server_properties** file.
 
-**- Salvataggio :**
-È un thread che viene schedulato da **ScheduledExecutorService  schedulatore** mediante il metodo **scheduleWithFixedDelay** per effettuare periodicamente il salvataggio delle strutture dati in memoria. Tutti i parametri inerenti gli intervalli di tempo che regolano l'esecuzione periodica del thread, passati al metodo scheduleWithFixedDelay, sono definiti nel file *server_properties*.
+**- MulticastHandler:**  
+Like the `SaveThread`, this thread is also scheduled by the **ScheduledExecutorService scheduler** using the **scheduleWithFixedDelay** method to periodically check local rankings and notify logged-in users of changes.  
+The check is performed by calculating the **score** of hotels based on the reviews associated with them. Using this **score**, the list of hotels in each city is reordered in descending order. Then, the name of the hotel at the top of the list is compared with the name of the hotel currently stored in the **topHotels** data structure for that city. If they differ, the `MulticastHandler` updates the **topHotels** structure and sends a UDP packet to the multicast group containing the city and the name of the new top-ranked hotel.
 
-**- MulticastHandler :**
-Come il thread Salvataggio anche esso viene schedultato da **ScheduledExecutorService  schedulatore** mediante il metodo **scheduleWithFixedDelay** per effettuare periodicamente il controllo dei rank locali e di notificare gli utenti loggati nel caso di cambianti.
-Il controllo avviente calcolando lo **score** degli hotels in base alle recenzioni ad essi associate e mediante questo **score** viene riodinata in modo decrescente la lista degli hotels associta ad ogni città. Successivamente viene confrontato il nome dell'hotel primo in lista con il nome dell'hotel presente nella struttura dati **topHotels** associato alla città presa in esame, se questi differiscono, il MulticastHandler aggiornerà la struttura topHotels e provvederà ad inviare un pacchetto UDP al gruppo multicast contenente la città e il nome del nuovo hotel che è il primo in classifica.
-
-**- Runner :**
-Questo thread si occupa dell'interazione con il client, fornisce tutti i servizi richiesti dal client come la **registrazione, il login, la ricerca di un hotel specifico oppure di tutti gli hotel presenti in una città e riceve le recenzioni degli utenti**. 
-Quando riceve una recensione il thread si occupa anche di inserirla nella struttura dati **hashmap** e di aggiornare tutte le valutazioni inerenti all'hotel recensito.
-I thread Runner sono gestiti dal **gestore** che, come detto prima, è un **ThreadPool** che in particolare dedica un thread ad ogni richiesta che un client effettua. Ciò comporta che ogni thread Runner ha vita breve in quanto offre il servizio richiesto dal client per poi terminare ad eccezion fatta se l'utente effettua il login. In questo caso viene definita una connessione persistente e quindi viene dedicato un thread Runner a tale client per tutta durata della connessione, ovvero, fin quando l'utente non effettua il logout.
-Tutti i parametri con cui è stato definito il **ThreadPoolExecutor gestore** sono definiti nel file server_properties. 
-
-
-
+**- Runner:**  
+This thread handles the interaction with the client and provides all the services requested by the client, such as **registration, login, searching for a specific hotel or all hotels in a city, and receiving user reviews**.  
+When it receives a review, the thread inserts it into the **hashmap** data structure and updates all ratings related to the reviewed hotel.  
+The `Runner` threads are managed by the **manager**, which is a **ThreadPool**. Specifically, each client request is handled by a dedicated thread. This means each `Runner` thread has a short lifespan, as it serves the client's request and then terminates, unless the user is logged in. In that case, a persistent connection is established, and a dedicated `Runner` thread remains active for the duration of the connection (i.e., until the user logs out).  
+All parameters for the **ThreadPoolExecutor Manager** are defined in the **server_properties** file.
 
 
 
